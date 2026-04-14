@@ -23,7 +23,7 @@ const Dashboard = () => {
       return;
     }
     fetchOrders();
-  }, []);
+  }, [navigate]);
 
   const fetchOrders = async () => {
     try {
@@ -83,7 +83,6 @@ const Dashboard = () => {
   };
 
   const downloadInvoice = (orderId) => {
-    const token = localStorage.getItem("token");
     window.open(`https://tobby-delivery-backend.onrender.com/api/invoices/${orderId}`, "_blank");
   };
 
