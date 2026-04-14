@@ -84,7 +84,7 @@ const Dashboard = () => {
 
   const downloadInvoice = (orderId) => {
     const token = localStorage.getItem("token");
-    window.open(`http://localhost:3000/api/invoices/${orderId}?token=${token}`, "_blank");
+    window.open(`https://tobby-delivery-backend.onrender.com/api/invoices/${orderId}`, "_blank");
   };
 
   return (
