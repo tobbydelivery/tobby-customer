@@ -25,12 +25,14 @@ const Track = () => {
       handleTrackById(id);
     }
     return () => { if (socket) socket.disconnect(); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (order && mapRef.current && !mapInstanceRef.current) {
       initMap();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order]);
 
   useEffect(() => {
