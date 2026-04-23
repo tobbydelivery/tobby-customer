@@ -13,6 +13,8 @@ const Dashboard = () => {
   });
   const [priceEstimate, setPriceEstimate] = useState(null);
   const [message, setMessage] = useState("");
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountResult, setDiscountResult] = useState(null);
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -50,6 +52,19 @@ const Dashboard = () => {
     }
   };
 
+  const applyDiscountCode = async () => {
+    try {
+      const amount = priceEstimate?.pricing?.standard?.price || 2500;
+      const res = await API.post("/discounts/validate", {
+        code: discountCode,
+        orderAmount: amount
+      });
+      setDiscountResult(res.data);
+    } catch (err) {
+      alert(err.response?.data?.error || "Invalid discount code");
+    }
+  };
+
   const createOrder = async (e) => {
     e.preventDefault();
     try {
@@ -62,6 +77,8 @@ const Dashboard = () => {
       setShowBooking(false);
       setForm({ senderName: "", senderPhone: "", senderAddress: "", recipientName: "", recipientPhone: "", recipientAddress: "", description: "", weight: "", fragile: false });
       setPriceEstimate(null);
+      setDiscountCode("");
+      setDiscountResult(null);
       fetchOrders();
     } catch (err) {
       setMessage(err.response?.data?.error || "Error creating order");
@@ -87,13 +104,19 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", minHeight: "100vh", background: "#f4f6f8" }}>
+    <div style={{ fontFamily: "'Segoe UI', sans-serif", minHeight: "100vh", background: "#f4f6f8" }}>
       {/* Navbar */}
       <nav style={{ background: "#2c3e50", padding: "15px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={{ color: "white", margin: 0 }}>🚚 Tobby Delivery</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <span style={{ fontSize: "24px" }}>🚚</span>
+          <div>
+            <div style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>STeX Logistics</div>
+            <div style={{ color: "#e74c3c", fontSize: "10px", letterSpacing: "2px" }}>SWIFT • TRUSTED • EXPRESS</div>
+          </div>
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <span style={{ color: "white" }}>👋 {user.name}</span>
-          <button onClick={logout} style={{ padding: "8px 16px", background: "#e74c3c", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" }}>
+          <button onClick={logout} style={{ padding: "8px 16px", background: "#e74c3c", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "600" }}>
             Logout
           </button>
         </div>
@@ -101,26 +124,23 @@ const Dashboard = () => {
 
       <div style={{ maxWidth: "1000px", margin: "40px auto", padding: "0 20px" }}>
         {message && (
-          <div style={{ background: message.includes("success") ? "#d4edda" : "#fee", color: message.includes("success") ? "#27ae60" : "#e74c3c", padding: "15px", borderRadius: "8px", marginBottom: "20px" }}>
+          <div style={{ background: message.includes("success") ? "#eafaf1" : "#fdedec", color: message.includes("success") ? "#27ae60" : "#e74c3c", padding: "15px", borderRadius: "10px", marginBottom: "20px", borderLeft: `4px solid ${message.includes("success") ? "#27ae60" : "#e74c3c"}` }}>
             {message}
           </div>
         )}
 
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
-          <h2 style={{ color: "#2c3e50", margin: 0 }}>My Orders</h2>
-          <button
-            onClick={() => setShowBooking(!showBooking)}
-            style={{ padding: "12px 25px", background: "#27ae60", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}
-          >
+          <h2 style={{ color: "#2c3e50", margin: 0, fontWeight: "800" }}>My Orders</h2>
+          <button onClick={() => setShowBooking(!showBooking)} style={{ padding: "12px 25px", background: "#27ae60", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "700", fontSize: "15px", boxShadow: "0 4px 15px rgba(39,174,96,0.3)" }}>
             + Book Delivery
           </button>
         </div>
 
         {/* Booking Form */}
         {showBooking && (
-          <div style={{ background: "white", padding: "30px", borderRadius: "12px", boxShadow: "0 2px 10px rgba(0,0,0,0.08)", marginBottom: "30px" }}>
-            <h3 style={{ color: "#2c3e50", marginBottom: "25px" }}>📦 Book a Delivery</h3>
+          <div style={{ background: "white", padding: "30px", borderRadius: "16px", boxShadow: "0 2px 15px rgba(0,0,0,0.08)", marginBottom: "30px" }}>
+            <h3 style={{ color: "#2c3e50", marginBottom: "25px", fontWeight: "800" }}>📦 Book a Delivery</h3>
             <form onSubmit={createOrder}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
                 <div>
@@ -131,15 +151,9 @@ const Dashboard = () => {
                     { label: "Address", key: "senderAddress", placeholder: "Pickup address" }
                   ].map(f => (
                     <div key={f.key} style={{ marginBottom: "15px" }}>
-                      <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50" }}>{f.label}</label>
-                      <input
-                        type="text"
-                        value={form[f.key]}
-                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                        required
-                        placeholder={f.placeholder}
-                        style={{ width: "100%", padding: "10px", border: "2px solid #ecf0f1", borderRadius: "6px", boxSizing: "border-box" }}
-                      />
+                      <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50", fontWeight: "600", fontSize: "14px" }}>{f.label}</label>
+                      <input type="text" value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} required placeholder={f.placeholder}
+                        style={{ width: "100%", padding: "10px 14px", border: "2px solid #ecf0f1", borderRadius: "8px", boxSizing: "border-box", fontSize: "14px" }} />
                     </div>
                   ))}
                 </div>
@@ -151,50 +165,30 @@ const Dashboard = () => {
                     { label: "Address", key: "recipientAddress", placeholder: "Delivery address" }
                   ].map(f => (
                     <div key={f.key} style={{ marginBottom: "15px" }}>
-                      <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50" }}>{f.label}</label>
-                      <input
-                        type="text"
-                        value={form[f.key]}
-                        onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                        required
-                        placeholder={f.placeholder}
-                        style={{ width: "100%", padding: "10px", border: "2px solid #ecf0f1", borderRadius: "6px", boxSizing: "border-box" }}
-                      />
+                      <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50", fontWeight: "600", fontSize: "14px" }}>{f.label}</label>
+                      <input type="text" value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} required placeholder={f.placeholder}
+                        style={{ width: "100%", padding: "10px 14px", border: "2px solid #ecf0f1", borderRadius: "8px", boxSizing: "border-box", fontSize: "14px" }} />
                     </div>
                   ))}
                 </div>
               </div>
 
-              <h4 style={{ color: "#2c3e50", marginBottom: "15px" }}>📋 Package Details</h4>
+              <h4 style={{ color: "#2c3e50", marginBottom: "15px", fontWeight: "700" }}>📋 Package Details</h4>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "15px", marginBottom: "20px" }}>
                 <div>
-                  <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50" }}>Description</label>
-                  <input
-                    type="text"
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    required
-                    placeholder="e.g. Electronics"
-                    style={{ width: "100%", padding: "10px", border: "2px solid #ecf0f1", borderRadius: "6px", boxSizing: "border-box" }}
-                  />
+                  <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50", fontWeight: "600", fontSize: "14px" }}>Description</label>
+                  <input type="text" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required placeholder="e.g. Electronics"
+                    style={{ width: "100%", padding: "10px 14px", border: "2px solid #ecf0f1", borderRadius: "8px", boxSizing: "border-box", fontSize: "14px" }} />
                 </div>
                 <div>
-                  <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50" }}>Weight (kg)</label>
-                  <input
-                    type="number"
-                    value={form.weight}
-                    onChange={(e) => setForm({ ...form, weight: e.target.value })}
-                    placeholder="e.g. 2.5"
-                    style={{ width: "100%", padding: "10px", border: "2px solid #ecf0f1", borderRadius: "6px", boxSizing: "border-box" }}
-                  />
+                  <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50", fontWeight: "600", fontSize: "14px" }}>Weight (kg)</label>
+                  <input type="number" value={form.weight} onChange={(e) => setForm({ ...form, weight: e.target.value })} placeholder="e.g. 2.5"
+                    style={{ width: "100%", padding: "10px 14px", border: "2px solid #ecf0f1", borderRadius: "8px", boxSizing: "border-box", fontSize: "14px" }} />
                 </div>
                 <div>
-                  <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50" }}>Fragile?</label>
-                  <select
-                    value={form.fragile}
-                    onChange={(e) => setForm({ ...form, fragile: e.target.value === "true" })}
-                    style={{ width: "100%", padding: "10px", border: "2px solid #ecf0f1", borderRadius: "6px", boxSizing: "border-box" }}
-                  >
+                  <label style={{ display: "block", marginBottom: "5px", color: "#2c3e50", fontWeight: "600", fontSize: "14px" }}>Fragile?</label>
+                  <select value={form.fragile} onChange={(e) => setForm({ ...form, fragile: e.target.value === "true" })}
+                    style={{ width: "100%", padding: "10px 14px", border: "2px solid #ecf0f1", borderRadius: "8px", boxSizing: "border-box", fontSize: "14px" }}>
                     <option value="false">No</option>
                     <option value="true">Yes</option>
                   </select>
@@ -202,34 +196,44 @@ const Dashboard = () => {
               </div>
 
               {/* Price Estimate */}
-              <button
-                type="button"
-                onClick={getEstimate}
-                style={{ padding: "10px 20px", background: "#9b59b6", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", marginBottom: "15px" }}
-              >
+              <button type="button" onClick={getEstimate} style={{ padding: "10px 20px", background: "#9b59b6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", marginBottom: "15px", fontWeight: "600" }}>
                 💰 Get Price Estimate
               </button>
 
               {priceEstimate && (
-                <div style={{ background: "#f8f9fa", padding: "15px", borderRadius: "8px", marginBottom: "20px" }}>
-                  <strong>Distance:</strong> {priceEstimate.distanceKm} km |{" "}
-                  <strong>Standard:</strong> ₦{priceEstimate.pricing?.standard?.price} ({priceEstimate.pricing?.standard?.estimatedTime}) |{" "}
-                  <strong>Express:</strong> ₦{priceEstimate.pricing?.express?.price} ({priceEstimate.pricing?.express?.estimatedTime})
+                <div style={{ background: "#f8f9fa", padding: "15px", borderRadius: "10px", marginBottom: "20px" }}>
+                  <div style={{ marginBottom: "10px" }}>
+                    <strong>Distance:</strong> {priceEstimate.distanceKm} km |{" "}
+                    <strong>Standard:</strong> ₦{priceEstimate.pricing?.standard?.price} ({priceEstimate.pricing?.standard?.estimatedTime}) |{" "}
+                    <strong>Express:</strong> ₦{priceEstimate.pricing?.express?.price} ({priceEstimate.pricing?.express?.estimatedTime})
+                  </div>
+
+                  {/* Discount Code */}
+                  <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                    <input
+                      type="text"
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                      placeholder="Enter promo code e.g. SAVE20"
+                      style={{ flex: 1, padding: "10px 14px", border: "2px solid #ecf0f1", borderRadius: "8px", fontSize: "14px" }}
+                    />
+                    <button type="button" onClick={applyDiscountCode} style={{ padding: "10px 20px", background: "#9b59b6", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" }}>
+                      Apply
+                    </button>
+                  </div>
+                  {discountResult && (
+                    <div style={{ marginTop: "10px", background: "#eafaf1", padding: "10px", borderRadius: "8px", color: "#27ae60", fontWeight: "600" }}>
+                      ✅ Code applied! You save ₦{discountResult.discountAmount} — Final price: ₦{discountResult.finalAmount}
+                    </div>
+                  )}
                 </div>
               )}
 
               <div style={{ display: "flex", gap: "15px" }}>
-                <button
-                  type="submit"
-                  style={{ padding: "12px 30px", background: "#27ae60", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}
-                >
+                <button type="submit" style={{ padding: "12px 30px", background: "#27ae60", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "700", fontSize: "15px" }}>
                   Book Delivery
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setShowBooking(false)}
-                  style={{ padding: "12px 30px", background: "#e74c3c", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
-                >
+                <button type="button" onClick={() => setShowBooking(false)} style={{ padding: "12px 30px", background: "#e74c3c", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "700" }}>
                   Cancel
                 </button>
               </div>
@@ -241,7 +245,7 @@ const Dashboard = () => {
         {loading ? (
           <p>Loading orders...</p>
         ) : orders.length === 0 ? (
-          <div style={{ background: "white", padding: "60px", borderRadius: "12px", textAlign: "center", boxShadow: "0 2px 10px rgba(0,0,0,0.08)" }}>
+          <div style={{ background: "white", padding: "60px", borderRadius: "16px", textAlign: "center", boxShadow: "0 2px 15px rgba(0,0,0,0.08)" }}>
             <div style={{ fontSize: "60px", marginBottom: "20px" }}>📦</div>
             <h3 style={{ color: "#2c3e50" }}>No orders yet</h3>
             <p style={{ color: "#7f8c8d" }}>Click "Book Delivery" to send your first package!</p>
@@ -249,35 +253,23 @@ const Dashboard = () => {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
             {orders.map((order, i) => (
-              <div key={i} style={{ background: "white", borderRadius: "12px", padding: "20px", boxShadow: "0 2px 10px rgba(0,0,0,0.08)", borderLeft: `4px solid ${getStatusColor(order.status)}` }}>
+              <div key={i} style={{ background: "white", borderRadius: "16px", padding: "20px", boxShadow: "0 2px 15px rgba(0,0,0,0.08)", borderLeft: `4px solid ${getStatusColor(order.status)}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div>
-                    <div style={{ fontWeight: "bold", color: "#3498db", fontSize: "16px" }}>{order.trackingNumber}</div>
-                    <div style={{ color: "#555", marginTop: "5px" }}>
-                      <strong>From:</strong> {order.sender?.address}
-                    </div>
-                    <div style={{ color: "#555" }}>
-                      <strong>To:</strong> {order.recipient?.address}
-                    </div>
-                    <div style={{ color: "#7f8c8d", fontSize: "13px", marginTop: "5px" }}>
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </div>
+                    <div style={{ fontWeight: "800", color: "#3498db", fontSize: "16px" }}>{order.trackingNumber}</div>
+                    <div style={{ color: "#555", marginTop: "5px", fontSize: "14px" }}><strong>From:</strong> {order.sender?.address}</div>
+                    <div style={{ color: "#555", fontSize: "14px" }}><strong>To:</strong> {order.recipient?.address}</div>
+                    <div style={{ color: "#7f8c8d", fontSize: "13px", marginTop: "5px" }}>{new Date(order.createdAt).toLocaleDateString()}</div>
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <span style={{ background: getStatusColor(order.status), color: "white", padding: "6px 14px", borderRadius: "20px", fontSize: "13px", fontWeight: "bold" }}>
+                    <span style={{ background: getStatusColor(order.status), color: "white", padding: "6px 14px", borderRadius: "20px", fontSize: "13px", fontWeight: "700" }}>
                       {order.status.replace("_", " ")}
                     </span>
                     <div style={{ marginTop: "10px", display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                      <button
-                        onClick={() => navigate(`/track?id=${order.trackingNumber}`)}
-                        style={{ padding: "6px 12px", background: "#3498db", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "12px" }}
-                      >
+                      <button onClick={() => navigate(`/track?id=${order.trackingNumber}`)} style={{ padding: "6px 12px", background: "#3498db", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>
                         📍 Track
                       </button>
-                      <button
-                        onClick={() => downloadInvoice(order._id)}
-                        style={{ padding: "6px 12px", background: "#9b59b6", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "12px" }}
-                      >
+                      <button onClick={() => downloadInvoice(order._id)} style={{ padding: "6px 12px", background: "#9b59b6", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>
                         📄 Invoice
                       </button>
                     </div>
