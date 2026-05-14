@@ -303,8 +303,8 @@ const Home = () => {
               <span key={i} style={{ color: "#95a5a6", fontSize: "13px", cursor: "pointer" }}>{item}</span>
             ))}
           </div>
-        </div>
       </div>
+    </div>
   );
 };
 
