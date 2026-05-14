@@ -231,9 +231,9 @@ const Home = () => {
         </button>
       </div>
 
-      {/* FOOTER */}
+            {/* FOOTER */}
       <div style={{ background: "#1a252f", padding: "60px", color: "white" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "40px", maxWidth: "1100px", margin: "0 auto 40px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "40px", maxWidth: "1200px", margin: "0 auto 40px" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
               <span style={{ fontSize: "24px" }}>🚚</span>
@@ -242,31 +242,69 @@ const Home = () => {
                 <div style={{ color: "#e74c3c", fontSize: "11px", letterSpacing: "2px" }}>SWIFT • TRUSTED • EXPRESS</div>
               </div>
             </div>
-            <p style={{ color: "#95a5a6", lineHeight: "1.7", fontSize: "14px" }}>
+            <p style={{ color: "#95a5a6", lineHeight: "1.7", fontSize: "14px", marginBottom: "20px" }}>
               Nigeria's most reliable logistics company. We deliver your packages safely, quickly, and affordably across all 36 states.
             </p>
+            <div style={{ display: "flex", gap: "12px" }}>
+              {[
+                { icon: "📘", label: "Facebook", url: "#" },
+                { icon: "📸", label: "Instagram", url: "#" },
+                { icon: "🐦", label: "Twitter", url: "#" },
+                { icon: "💼", label: "LinkedIn", url: "#" }
+              ].map((social, i) => (
+                <a key={i} href={social.url} style={{ width: "36px", height: "36px", borderRadius: "8px", background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: "16px" }}>
+                  {social.icon}
+                </a>
+              ))}
+            </div>
           </div>
           <div>
-            <h4 style={{ marginBottom: "20px", color: "white" }}>Quick Links</h4>
-            {["Track Order", "Book Delivery", "Register", "Login"].map((link, i) => (
-              <div key={i} style={{ color: "#95a5a6", marginBottom: "10px", cursor: "pointer", fontSize: "14px" }}>{link}</div>
+            <h4 style={{ marginBottom: "20px", color: "white", fontWeight: "700" }}>Quick Links</h4>
+            {[
+              { label: "Track Order", onClick: () => navigate("/track") },
+              { label: "Book Delivery", onClick: () => navigate("/register") },
+              { label: "Register", onClick: () => navigate("/register") },
+              { label: "Login", onClick: () => navigate("/login") }
+            ].map((link, i) => (
+              <div key={i} onClick={link.onClick} style={{ color: "#95a5a6", marginBottom: "10px", cursor: "pointer", fontSize: "14px", transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = "#e74c3c"}
+                onMouseLeave={e => e.target.style.color = "#95a5a6"}>
+                → {link.label}
+              </div>
             ))}
           </div>
           <div>
-            <h4 style={{ marginBottom: "20px", color: "white" }}>Contact Us</h4>
+            <h4 style={{ marginBottom: "20px", color: "white", fontWeight: "700" }}>Services</h4>
+            {["Express Delivery", "Standard Delivery", "Bulk Shipment", "Fragile Items", "Live Tracking"].map((service, i) => (
+              <div key={i} style={{ color: "#95a5a6", marginBottom: "10px", fontSize: "14px" }}>→ {service}</div>
+            ))}
+          </div>
+          <div>
+            <h4 style={{ marginBottom: "20px", color: "white", fontWeight: "700" }}>Contact Us</h4>
             <div style={{ color: "#95a5a6", fontSize: "14px", lineHeight: "2" }}>
-              <div>📧 info@stexlogistics.com</div>
+              <div>📧 support@stexlogistics.com</div>
               <div>📞 +234 800 000 0000</div>
               <div>📍 Lagos, Nigeria</div>
               <div>⏰ 24/7 Support</div>
+              <div style={{ marginTop: "10px" }}>
+                <a href="mailto:support@stexlogistics.com" style={{ color: "#e74c3c", textDecoration: "none", fontWeight: "600" }}>
+                  Send us an email →
+                </a>
+              </div>
             </div>
           </div>
         </div>
-        <div style={{ borderTop: "1px solid #2c3e50", paddingTop: "30px", textAlign: "center", color: "#95a5a6", fontSize: "13px" }}>
-          © 2024 STeX Logistics. All rights reserved. | Fast. Reliable. Affordable.
+        <div style={{ borderTop: "1px solid #2c3e50", paddingTop: "30px", maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+          <div style={{ color: "#95a5a6", fontSize: "13px" }}>
+            © 2024 STeX Logistics. All rights reserved.
+          </div>
+          <div style={{ display: "flex", gap: "20px" }}>
+            {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((item, i) => (
+              <span key={i} style={{ color: "#95a5a6", fontSize: "13px", cursor: "pointer" }}>{item}</span>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 
