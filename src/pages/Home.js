@@ -135,7 +135,6 @@ const Home = () => {
             <div key={i} style={{
               background: "white", padding: "35px", borderRadius: "16px",
               boxShadow: "0 4px 20px rgba(0,0,0,0.08)", textAlign: "center",
-              transition: "transform 0.2s", cursor: "default",
               borderTop: `4px solid ${service.color}`
             }}>
               <div style={{ fontSize: "45px", marginBottom: "20px" }}>{service.icon}</div>
@@ -171,8 +170,37 @@ const Home = () => {
         </div>
       </div>
 
-      {/* PRICING */}
+      {/* TESTIMONIALS */}
       <div style={{ padding: "100px 60px", background: "#f8f9fa" }}>
+        <div style={{ textAlign: "center", marginBottom: "60px" }}>
+          <div style={{ color: "#e74c3c", fontSize: "13px", letterSpacing: "3px", fontWeight: "600", marginBottom: "15px" }}>TESTIMONIALS</div>
+          <h2 style={{ color: "#2c3e50", fontSize: "40px", fontWeight: "800", margin: 0 }}>What Our Customers Say</h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "30px", maxWidth: "1100px", margin: "0 auto" }}>
+          {[
+            { name: "Adebayo Johnson", location: "Lagos", rating: 5, text: "STeX Logistics is the best delivery service I have used in Nigeria. Fast, reliable and my package arrived in perfect condition!" },
+            { name: "Chioma Okafor", location: "Abuja", rating: 5, text: "The real-time tracking feature is amazing. I could see exactly where my package was at every step. Highly recommended!" },
+            { name: "Emeka Nwachukwu", location: "Port Harcourt", rating: 5, text: "Excellent customer service and very affordable prices. STeX Logistics has become my go-to delivery company." }
+          ].map((review, i) => (
+            <div key={i} style={{ background: "white", padding: "30px", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
+              <div style={{ color: "#f39c12", fontSize: "20px", marginBottom: "15px" }}>{"⭐".repeat(review.rating)}</div>
+              <p style={{ color: "#555", lineHeight: "1.7", marginBottom: "20px", fontStyle: "italic" }}>"{review.text}"</p>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{ width: "44px", height: "44px", borderRadius: "50%", background: "#e74c3c", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: "800", fontSize: "18px" }}>
+                  {review.name.charAt(0)}
+                </div>
+                <div>
+                  <div style={{ fontWeight: "700", color: "#2c3e50" }}>{review.name}</div>
+                  <div style={{ fontSize: "13px", color: "#7f8c8d" }}>{review.location}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* PRICING */}
+      <div style={{ padding: "100px 60px", background: "white" }}>
         <div style={{ textAlign: "center", marginBottom: "60px" }}>
           <div style={{ color: "#e74c3c", fontSize: "13px", letterSpacing: "3px", fontWeight: "600", marginBottom: "15px" }}>PRICING</div>
           <h2 style={{ color: "#2c3e50", fontSize: "40px", fontWeight: "800", margin: 0 }}>Simple & Transparent</h2>
@@ -231,7 +259,7 @@ const Home = () => {
         </button>
       </div>
 
-            {/* FOOTER */}
+      {/* FOOTER */}
       <div style={{ background: "#1a252f", padding: "60px", color: "white" }}>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "40px", maxWidth: "1200px", margin: "0 auto 40px" }}>
           <div>
@@ -266,7 +294,7 @@ const Home = () => {
               { label: "Register", onClick: () => navigate("/register") },
               { label: "Login", onClick: () => navigate("/login") }
             ].map((link, i) => (
-              <div key={i} onClick={link.onClick} style={{ color: "#95a5a6", marginBottom: "10px", cursor: "pointer", fontSize: "14px", transition: "color 0.2s" }}
+              <div key={i} onClick={link.onClick} style={{ color: "#95a5a6", marginBottom: "10px", cursor: "pointer", fontSize: "14px" }}
                 onMouseEnter={e => e.target.style.color = "#e74c3c"}
                 onMouseLeave={e => e.target.style.color = "#95a5a6"}>
                 → {link.label}
@@ -303,7 +331,9 @@ const Home = () => {
               <span key={i} style={{ color: "#95a5a6", fontSize: "13px", cursor: "pointer" }}>{item}</span>
             ))}
           </div>
+        </div>
       </div>
+
     </div>
   );
 };
