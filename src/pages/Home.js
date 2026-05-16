@@ -39,7 +39,7 @@ const Home = () => {
       {/* HERO SECTION */}
       <div style={{
         minHeight: "100vh",
-        background: `linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600')`,
+        background: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://i.ibb.co/XkVB3qCd/B13-E95-AC-6-A36-48-B8-8-E92-E7881-B1-FB33-A.png')`,
         backgroundSize: "cover", backgroundPosition: "center",
         display: "flex", alignItems: "center", justifyContent: "center",
         textAlign: "center", padding: "0 20px"
@@ -236,7 +236,7 @@ const Home = () => {
       {/* CTA SECTION */}
       <div style={{
         padding: "100px 60px", textAlign: "center",
-        background: `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=1600')`,
+        background: `linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://i.ibb.co/XkVB3qCd/B13-E95-AC-6-A36-48-B8-8-E92-E7881-B1-FB33-A.png')`,
         backgroundSize: "cover", backgroundPosition: "center"
       }}>
         <h2 style={{ color: "white", fontSize: "42px", fontWeight: "900", marginBottom: "20px" }}>Ready to Ship?</h2>
